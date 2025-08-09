@@ -4,19 +4,15 @@ import { useState, useEffect } from 'react';
 import { format } from 'date-fns';
 import { ja } from 'date-fns/locale';
 import { DinnerRecord } from '@/lib/types';
-import { addDinnerRecord } from '@/lib/firestore';
 
 interface DinnerModalProps {
-  calendarId: string;
   date: Date;
   records: DinnerRecord[];
+  currentUserName: string;
   onClose: () => void;
 }
 
-export default function DinnerModal({ calendarId, date, records, onClose }: DinnerModalProps) {
-  const [name, setName] = useState('');
-  const [needsDinner, setNeedsDinner] = useState(true);
-  const [isSubmitting, setIsSubmitting] = useState(false);
+export default function DinnerModal({ date, records, currentUserName, onClose }: DinnerModalProps) {
   const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
@@ -28,27 +24,7 @@ export default function DinnerModal({ calendarId, date, records, onClose }: Dinn
     setTimeout(onClose, 300);
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!name.trim()) return;
 
-    setIsSubmitting(true);
-    try {
-      await addDinnerRecord(
-        calendarId,
-        format(date, 'yyyy-MM-dd'),
-        name.trim(),
-        needsDinner
-      );
-      setName('');
-      setNeedsDinner(true);
-    } catch (error) {
-      console.error('記録の追加に失敗しました:', error);
-      alert('記録の追加に失敗しました');
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
 
   const handleBackdropClick = (e: React.MouseEvent) => {
     if (e.target === e.currentTarget) {
@@ -83,7 +59,7 @@ export default function DinnerModal({ calendarId, date, records, onClose }: Dinn
                 </h2>
               </div>
               <p className="text-muted-foreground text-sm">
-                晩ごはんの予定を入力・確認しましょう
+                晩ごはんが必要な人を確認しましょう
               </p>
             </div>
             <button
@@ -100,142 +76,58 @@ export default function DinnerModal({ calendarId, date, records, onClose }: Dinn
 
         <div className="overflow-y-auto max-h-[calc(90vh-120px)]">
           <div className="p-6">
-            {/* 既存の記録 */}
-            {records.length > 0 && (
-              <div className="mb-8">
-                <h3 className="font-semibold mb-4 flex items-center gap-2">
-                  <svg className="w-5 h-5 text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+            {/* 現在の予定一覧 */}
+            <div className="mb-6">
+              <h3 className="font-semibold mb-4 flex items-center gap-2">
+                <svg className="w-5 h-5 text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+晩ごはんが必要な人 ({records.filter(r => r.needsDinner).length}人)
+              </h3>
+              
+              {records.length === 0 ? (
+                <div className="text-center py-12 text-muted-foreground">
+                  <svg className="w-12 h-12 mx-auto mb-4 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                   </svg>
-                  現在の予定 ({records.length}人)
-                </h3>
+                  <p>この日は晩ごはんが必要な人がいません</p>
+                </div>
+              ) : (
                 <div className="space-y-3">
-                  {records.map((record) => (
-                    <div
-                      key={record.id}
-                      className={`group p-4 rounded-2xl transition-all duration-200 ${
-                        record.needsDinner 
-                          ? 'bg-gradient-to-r from-green-50 to-emerald-50 border border-green-200 dark:from-green-900/20 dark:to-emerald-900/20 dark:border-green-800' 
-                          : 'bg-gradient-to-r from-red-50 to-pink-50 border border-red-200 dark:from-red-900/20 dark:to-pink-900/20 dark:border-red-800'
-                      }`}
-                    >
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-3">
-                          <div className={`w-3 h-3 rounded-full ${
-                            record.needsDinner ? 'bg-green-400' : 'bg-red-400'
-                          }`}></div>
-                          <span className="font-semibold text-foreground">{record.name}</span>
+                  {records.filter(r => r.needsDinner).map((record) => {
+                    const isCurrentUser = record.name === currentUserName;
+                    return (
+                      <div
+                        key={record.id}
+                        className={`group p-4 rounded-2xl transition-all duration-200 bg-green-50 dark:bg-green-900/20 ${
+                          isCurrentUser ? 'ring-2 ring-purple-200 dark:ring-purple-800' : ''
+                        }`}
+                      >
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center gap-3">
+                            <div className="w-3 h-3 rounded-full bg-green-400"></div>
+                            <span className="font-semibold text-foreground flex items-center gap-2">
+                              {record.name}
+                              {isCurrentUser && (
+                                <span className="px-2 py-1 bg-purple-100 text-purple-700 dark:bg-purple-900/50 dark:text-purple-300 text-xs font-medium rounded-full">
+                                  あなた
+                                </span>
+                              )}
+                            </span>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <div className="text-sm font-medium text-green-700 dark:text-green-300">
+                              必要
+                            </div>
+                          </div>
                         </div>
-                        <div className={`flex items-center gap-2 px-3 py-1 rounded-full text-sm font-medium ${
-                          record.needsDinner 
-                            ? 'bg-green-100 text-green-700 dark:bg-green-900/50 dark:text-green-300' 
-                            : 'bg-red-100 text-red-700 dark:bg-red-900/50 dark:text-red-300'
-                        }`}>
-                          <span>{record.needsDinner ? '⭕' : '❌'}</span>
-                          <span>{record.needsDinner ? 'いる' : 'いらない'}</span>
-                        </div>
                       </div>
-                    </div>
-                  ))}
+                    );
+                  })}
                 </div>
-              </div>
-            )}
+              )}
+            </div>
 
-            {/* 新規追加フォーム */}
-            <form onSubmit={handleSubmit} className="space-y-6">
-              <div>
-                <label className="block text-sm font-semibold text-foreground mb-3">
-                  お名前
-                </label>
-                <input
-                  type="text"
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                  placeholder="例: パパ、ママ、長女"
-                  className="w-full px-4 py-3 bg-background border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
-                  required
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-semibold text-foreground mb-3">
-                  晩ごはんは必要ですか？
-                </label>
-                <div className="grid grid-cols-2 gap-3">
-                  <label className={`relative flex items-center justify-center p-4 rounded-xl border-2 cursor-pointer transition-all ${
-                    needsDinner 
-                      ? 'border-green-500 bg-green-50 dark:bg-green-900/20' 
-                      : 'border-border bg-background hover:border-green-200'
-                  }`}>
-                    <input
-                      type="radio"
-                      checked={needsDinner}
-                      onChange={() => setNeedsDinner(true)}
-                      className="sr-only"
-                    />
-                    <div className="text-center">
-                      <div className="text-2xl mb-1">⭕</div>
-                      <div className={`font-medium ${needsDinner ? 'text-green-700 dark:text-green-300' : 'text-muted-foreground'}`}>
-                        いる
-                      </div>
-                    </div>
-                    {needsDinner && (
-                      <div className="absolute -top-1 -right-1 w-4 h-4 bg-green-500 rounded-full flex items-center justify-center">
-                        <svg className="w-2 h-2 text-white" fill="currentColor" viewBox="0 0 20 20">
-                          <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                        </svg>
-                      </div>
-                    )}
-                  </label>
-
-                  <label className={`relative flex items-center justify-center p-4 rounded-xl border-2 cursor-pointer transition-all ${
-                    !needsDinner 
-                      ? 'border-red-500 bg-red-50 dark:bg-red-900/20' 
-                      : 'border-border bg-background hover:border-red-200'
-                  }`}>
-                    <input
-                      type="radio"
-                      checked={!needsDinner}
-                      onChange={() => setNeedsDinner(false)}
-                      className="sr-only"
-                    />
-                    <div className="text-center">
-                      <div className="text-2xl mb-1">❌</div>
-                      <div className={`font-medium ${!needsDinner ? 'text-red-700 dark:text-red-300' : 'text-muted-foreground'}`}>
-                        いらない
-                      </div>
-                    </div>
-                    {!needsDinner && (
-                      <div className="absolute -top-1 -right-1 w-4 h-4 bg-red-500 rounded-full flex items-center justify-center">
-                        <svg className="w-2 h-2 text-white" fill="currentColor" viewBox="0 0 20 20">
-                          <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                        </svg>
-                      </div>
-                    )}
-                  </label>
-                </div>
-              </div>
-
-              <button
-                type="submit"
-                disabled={isSubmitting || !name.trim()}
-                className="w-full bg-gradient-to-r from-purple-500 to-pink-500 text-white py-4 px-6 rounded-xl font-semibold hover:from-purple-600 hover:to-pink-600 disabled:from-gray-300 disabled:to-gray-300 disabled:cursor-not-allowed transition-all duration-200 hover-lift focus:ring-2 focus:ring-primary focus:ring-offset-2 flex items-center justify-center gap-2"
-              >
-                {isSubmitting ? (
-                  <>
-                    <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                    追加中...
-                  </>
-                ) : (
-                  <>
-                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
-                    </svg>
-                    追加する
-                  </>
-                )}
-              </button>
-            </form>
           </div>
         </div>
       </div>

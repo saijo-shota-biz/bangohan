@@ -9,7 +9,9 @@ import {
   orderBy,
   onSnapshot,
   serverTimestamp,
-  Timestamp
+  Timestamp,
+  deleteDoc,
+  updateDoc
 } from 'firebase/firestore';
 import { db } from './firebase';
 import { DinnerRecord } from './types';
@@ -115,4 +117,26 @@ export function subscribeToMonthRecords(
   });
   
   return unsubscribe;
+}
+
+// 記録を削除
+export async function deleteDinnerRecord(
+  calendarId: string,
+  recordId: string
+): Promise<void> {
+  const recordRef = doc(db, 'calendars', calendarId, 'records', recordId);
+  await deleteDoc(recordRef);
+}
+
+// 記録を更新
+export async function updateDinnerRecord(
+  calendarId: string,
+  recordId: string,
+  needsDinner: boolean
+): Promise<void> {
+  const recordRef = doc(db, 'calendars', calendarId, 'records', recordId);
+  await updateDoc(recordRef, {
+    needsDinner,
+    updatedAt: serverTimestamp()
+  });
 }
