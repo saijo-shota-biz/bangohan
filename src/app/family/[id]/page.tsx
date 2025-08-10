@@ -6,6 +6,7 @@ import Calendar from '@/components/Calendar';
 import ShareButton from '@/components/ShareButton';
 import DinnerModal from '@/components/DinnerModal';
 import UserSetup from '@/components/UserSetup';
+import TodaysDinner from '@/components/TodaysDinner';
 import { subscribeToMonthRecords, addDinnerRecord, deleteDinnerRecord } from '@/lib/firestore';
 import { UserNameManager } from '@/lib/userName';
 import { DinnerRecord } from '@/lib/types';
@@ -146,6 +147,8 @@ export default function FamilyCalendarPage() {
             currentUserName={userName!}
           />
         </div>
+
+        <TodaysDinner records={records} />
 
         <div className="glass-effect rounded-2xl p-4 animate-fade-in">
           <div className="text-center text-sm text-amber-700">
