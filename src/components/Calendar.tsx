@@ -88,8 +88,9 @@ export default function Calendar({ records, currentMonth, onMonthChange, onDateC
           
           let longPressTimer: NodeJS.Timeout;
           
-          const handleMouseDown = () => {
+          const handleMouseDown = (e: React.MouseEvent | React.TouchEvent) => {
             if (!isCurrentMonth) return;
+            e.preventDefault(); // テキスト選択を防ぐ
             longPressTimer = setTimeout(() => {
               onDateLongPress(date);
             }, 500);
@@ -115,7 +116,7 @@ export default function Calendar({ records, currentMonth, onMonthChange, onDateC
               onTouchEnd={handleMouseUp}
               disabled={!isCurrentMonth}
               className={`
-                relative group rounded-lg aspect-square transition-all duration-300 ease-in-out
+                relative group rounded-lg aspect-square transition-all duration-300 ease-in-out select-none
                 ${!isCurrentMonth 
                   ? 'bg-amber-100/30 text-amber-400 cursor-not-allowed opacity-40' 
                   : currentUserRecord && currentUserRecord.needsDinner
