@@ -93,7 +93,7 @@ export default function FamilyCalendarPage() {
       <div className="min-h-screen flex items-center justify-center">
         <div className="glass-effect p-8 rounded-2xl text-center animate-scale-in">
           <div className="w-12 h-12 mx-auto mb-4 border-4 border-orange-200 border-t-orange-500 rounded-full animate-spin"></div>
-          <p className="text-muted-foreground">読み込み中...</p>
+          <p className="text-amber-700">読み込み中...</p>
         </div>
       </div>
     );
@@ -119,11 +119,11 @@ export default function FamilyCalendarPage() {
                   <h1 className="text-lg sm:text-xl font-bold gradient-text truncate">
                     晩ごはんカレンダー
                   </h1>
-                  <div className="flex items-center gap-2 text-muted-foreground text-sm">
+                  <div className="flex items-center gap-2 text-amber-600 text-sm">
                     <span className="truncate">{userName}さん</span>
                     <button
                       onClick={handleUserNameChange}
-                      className="text-xs px-2 py-0.5 bg-secondary hover:bg-accent rounded-md transition-colors flex-shrink-0"
+                      className="text-xs px-2 py-0.5 bg-amber-200 hover:bg-amber-300 text-amber-800 rounded-md transition-colors flex-shrink-0"
                       title="名前を変更"
                     >
                       変更
@@ -148,7 +148,7 @@ export default function FamilyCalendarPage() {
         </div>
 
         <div className="glass-effect rounded-2xl p-4 animate-fade-in">
-          <div className="text-center text-sm text-muted-foreground">
+          <div className="text-center text-sm text-amber-700">
             <p><span className="font-medium text-foreground">日付をタップ</span>で晩ごはん必要日を追加・削除</p>
             <p className="mt-1"><span className="font-medium text-foreground">URLコピー</span>で家族と共有</p>
           </div>

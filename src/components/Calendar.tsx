@@ -70,7 +70,7 @@ export default function Calendar({ records, currentMonth, onMonthChange, onDateC
             key={day} 
             className={`text-center font-semibold py-2 text-sm rounded-lg ${
               index === 0 ? 'text-red-500 bg-red-50 dark:bg-red-900/20' : 
-              index === 6 ? 'text-blue-500 bg-blue-50 dark:bg-blue-900/20' : 
+              index === 6 ? 'text-amber-600 bg-amber-100 dark:bg-amber-900/20' : 
               'text-amber-800 bg-amber-100/80'
             }`}
           >
@@ -117,7 +117,7 @@ export default function Calendar({ records, currentMonth, onMonthChange, onDateC
               className={`
                 relative group rounded-lg aspect-square transition-all duration-300 ease-in-out
                 ${!isCurrentMonth 
-                  ? 'bg-muted/30 text-muted-foreground cursor-not-allowed opacity-40' 
+                  ? 'bg-amber-100/30 text-amber-400 cursor-not-allowed opacity-40' 
                   : currentUserRecord && currentUserRecord.needsDinner
                   ? 'bg-gradient-to-br from-orange-100 to-yellow-100 border-2 border-orange-300 cursor-pointer hover:shadow-lg active:scale-95'
                   : 'bg-amber-50 border border-amber-200 hover:border-orange-400 cursor-pointer hover:shadow-lg active:scale-95'

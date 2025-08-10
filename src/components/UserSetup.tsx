@@ -30,10 +30,10 @@ export default function UserSetup({ onComplete }: UserSetupProps) {
           <h1 className="text-2xl font-bold gradient-text mb-3">
             はじめまして！
           </h1>
-          <p className="text-muted-foreground text-base mb-2">
+          <p className="text-amber-700 text-base mb-2">
             晩ごはんカレンダーへようこそ
           </p>
-          <p className="text-muted-foreground text-sm">
+          <p className="text-amber-700 text-sm">
             お名前を教えてください
           </p>
         </div>
@@ -45,7 +45,7 @@ export default function UserSetup({ onComplete }: UserSetupProps) {
               value={name}
               onChange={(e) => setName(e.target.value)}
               placeholder="例：パパ、ママ、長女"
-              className="w-full px-4 py-3 text-base text-center bg-background border-2 border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
+              className="w-full px-4 py-3 text-base text-center bg-amber-50 border-2 border-amber-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all"
               required
               autoFocus
             />
@@ -72,7 +72,7 @@ export default function UserSetup({ onComplete }: UserSetupProps) {
           </button>
         </form>
 
-        <div className="mt-4 text-xs text-muted-foreground">
+        <div className="mt-4 text-xs text-amber-600">
           <p>お名前は30日間記憶されます</p>
         </div>
       </div>
