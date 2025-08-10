@@ -90,9 +90,9 @@ export default function FamilyCalendarPage() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-50 via-blue-50 to-pink-50 dark:from-slate-950 dark:via-purple-950 dark:to-slate-900">
+      <div className="min-h-screen flex items-center justify-center">
         <div className="glass-effect p-8 rounded-2xl text-center animate-scale-in">
-          <div className="w-12 h-12 mx-auto mb-4 border-4 border-purple-200 border-t-purple-500 rounded-full animate-spin"></div>
+          <div className="w-12 h-12 mx-auto mb-4 border-4 border-orange-200 border-t-orange-500 rounded-full animate-spin"></div>
           <p className="text-muted-foreground">読み込み中...</p>
         </div>
       </div>
@@ -104,13 +104,13 @@ export default function FamilyCalendarPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-50 via-blue-50 to-pink-50 dark:from-slate-950 dark:via-purple-950 dark:to-slate-900">
+    <div className="min-h-screen">
       <div className="container mx-auto px-3 py-4">
         <div className="glass-effect rounded-2xl p-4 mb-6 card-hover animate-fade-in">
           <div className="flex flex-col gap-4 mb-6">
             <div className="flex justify-between items-start">
               <div className="flex items-center gap-3 min-w-0 flex-1">
-                <div className="w-10 h-10 bg-gradient-to-r from-purple-500 to-pink-500 rounded-xl flex items-center justify-center flex-shrink-0">
+                <div className="w-10 h-10 bg-gradient-to-r from-orange-400 to-amber-400 rounded-xl flex items-center justify-center flex-shrink-0">
                   <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                   </svg>

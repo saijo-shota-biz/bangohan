@@ -39,7 +39,7 @@ export default function Calendar({ records, currentMonth, onMonthChange, onDateC
       <div className="flex justify-between items-center mb-6">
         <button
           onClick={goToPreviousMonth}
-          className="flex items-center justify-center w-12 h-12 rounded-full bg-secondary hover:bg-accent transition-all hover-lift focus:ring-2 focus:ring-primary focus:ring-offset-2"
+          className="flex items-center justify-center w-12 h-12 rounded-full bg-amber-200 hover:bg-amber-300 text-amber-800 transition-all hover-lift focus:ring-2 focus:ring-primary focus:ring-offset-2"
           aria-label="前の月へ"
         >
           <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -48,14 +48,14 @@ export default function Calendar({ records, currentMonth, onMonthChange, onDateC
         </button>
         
         <div className="text-center">
-          <h2 className="text-xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
+          <h2 className="text-xl font-bold bg-gradient-to-r from-orange-600 to-amber-600 bg-clip-text text-transparent">
             {format(currentMonth, 'yyyy年M月', { locale: ja })}
           </h2>
         </div>
         
         <button
           onClick={goToNextMonth}
-          className="flex items-center justify-center w-12 h-12 rounded-full bg-secondary hover:bg-accent transition-all hover-lift focus:ring-2 focus:ring-primary focus:ring-offset-2"
+          className="flex items-center justify-center w-12 h-12 rounded-full bg-amber-200 hover:bg-amber-300 text-amber-800 transition-all hover-lift focus:ring-2 focus:ring-primary focus:ring-offset-2"
           aria-label="次の月へ"
         >
           <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -71,7 +71,7 @@ export default function Calendar({ records, currentMonth, onMonthChange, onDateC
             className={`text-center font-semibold py-2 text-sm rounded-lg ${
               index === 0 ? 'text-red-500 bg-red-50 dark:bg-red-900/20' : 
               index === 6 ? 'text-blue-500 bg-blue-50 dark:bg-blue-900/20' : 
-              'text-muted-foreground bg-muted/50'
+              'text-amber-800 bg-amber-100/80'
             }`}
           >
             {day}
@@ -119,14 +119,14 @@ export default function Calendar({ records, currentMonth, onMonthChange, onDateC
                 ${!isCurrentMonth 
                   ? 'bg-muted/30 text-muted-foreground cursor-not-allowed opacity-40' 
                   : currentUserRecord && currentUserRecord.needsDinner
-                  ? 'bg-gradient-to-br from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20 border-2 border-green-200 dark:border-green-800 cursor-pointer hover:shadow-lg active:scale-95'
-                  : 'bg-card border border-border hover:border-primary/50 cursor-pointer hover:shadow-lg active:scale-95'
+                  ? 'bg-gradient-to-br from-orange-100 to-yellow-100 border-2 border-orange-300 cursor-pointer hover:shadow-lg active:scale-95'
+                  : 'bg-amber-50 border border-amber-200 hover:border-orange-400 cursor-pointer hover:shadow-lg active:scale-95'
                 }
                 ${isCurrentDay 
-                  ? 'ring-2 ring-primary shadow-lg bg-gradient-to-br from-primary/10 to-pink-500/10' 
+                  ? 'ring-2 ring-orange-400 shadow-lg bg-gradient-to-br from-orange-100 to-amber-100' 
                   : ''
                 }
-                ${isWeekend && isCurrentMonth && !currentUserRecord ? 'bg-gradient-to-br from-slate-50 to-blue-50 dark:from-slate-900/10 dark:to-blue-900/10' : ''}
+                ${isWeekend && isCurrentMonth && !currentUserRecord ? 'bg-gradient-to-br from-amber-100 to-orange-100' : ''}
               `}
               aria-label={`${format(date, 'M月d日')}${currentUserRecord ? '（晩ごはん必要）をクリックして削除、長押しで詳細表示' : 'をクリックして晩ごはん必要に設定、長押しで詳細表示'}`}
             >
@@ -134,8 +134,8 @@ export default function Calendar({ records, currentMonth, onMonthChange, onDateC
               <div className="absolute inset-1 overflow-hidden sm:hidden">
                 {/* 日付を左上に */}
                 <div className={`absolute top-0 left-0 text-sm font-semibold leading-none ${
-                  isCurrentDay ? 'text-primary' : 
-                  !isCurrentMonth ? 'text-muted-foreground' : 'text-foreground'
+                  isCurrentDay ? 'text-orange-600' : 
+                  !isCurrentMonth ? 'text-amber-400' : 'text-amber-900'
                 }`}>
                   {format(date, 'd')}
                 </div>
@@ -150,8 +150,8 @@ export default function Calendar({ records, currentMonth, onMonthChange, onDateC
                       <div className="absolute bottom-0 right-0">
                         <div className={`text-xs font-semibold leading-none ${
                           currentUserRecord?.needsDinner 
-                            ? 'text-green-600 dark:text-green-400' 
-                            : 'text-gray-500 dark:text-gray-400'
+                            ? 'text-orange-600' 
+                            : 'text-amber-600'
                         }`}>
                           {needsDinnerCount}人
                         </div>
@@ -166,8 +166,8 @@ export default function Calendar({ records, currentMonth, onMonthChange, onDateC
               <div className="hidden sm:block absolute inset-1 overflow-hidden">
                 {/* 日付を左上に */}
                 <div className={`absolute top-0 left-0 text-sm font-semibold leading-none ${
-                  isCurrentDay ? 'text-primary' : 
-                  !isCurrentMonth ? 'text-muted-foreground' : 'text-foreground'
+                  isCurrentDay ? 'text-orange-600' : 
+                  !isCurrentMonth ? 'text-amber-400' : 'text-amber-900'
                 }`}>
                   {format(date, 'd')}
                 </div>
@@ -182,8 +182,8 @@ export default function Calendar({ records, currentMonth, onMonthChange, onDateC
                       <div className="absolute inset-0 flex items-center justify-center">
                         <div className={`text-sm font-semibold leading-none truncate ${
                           currentUserRecord?.needsDinner 
-                            ? 'text-green-600 dark:text-green-400' 
-                            : 'text-gray-500 dark:text-gray-400'
+                            ? 'text-orange-600' 
+                            : 'text-amber-600'
                         }`}>
                           {needsDinnerCount}人
                         </div>
@@ -195,11 +195,11 @@ export default function Calendar({ records, currentMonth, onMonthChange, onDateC
               </div>
               
               {isCurrentDay && (
-                <div className="absolute -top-0.5 -right-0.5 w-2 h-2 bg-primary rounded-full animate-pulse"></div>
+                <div className="absolute -top-0.5 -right-0.5 w-2 h-2 bg-orange-500 rounded-full animate-pulse"></div>
               )}
               
               {isCurrentMonth && (
-                <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-purple-500/0 to-pink-500/0 group-hover:from-purple-500/5 group-hover:to-pink-500/5 transition-all duration-300"></div>
+                <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-orange-500/0 to-amber-500/0 group-hover:from-orange-500/5 group-hover:to-amber-500/5 transition-all duration-300"></div>
               )}
             </button>
           );

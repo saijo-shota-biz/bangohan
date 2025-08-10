@@ -26,8 +26,8 @@ export default function ShareButton({ calendarId }: ShareButtonProps) {
       onClick={copyUrl}
       className={`flex items-center gap-2 px-3 py-2 rounded-xl font-medium transition-all duration-200 hover-lift focus:ring-2 focus:ring-primary focus:ring-offset-2 active:scale-95 ${
         copied 
-          ? 'bg-green-100 text-green-600 dark:bg-green-900/20 dark:text-green-400' 
-          : 'bg-secondary hover:bg-accent text-muted-foreground hover:text-foreground'
+          ? 'bg-orange-100 text-orange-600 dark:bg-orange-900/20 dark:text-orange-400' 
+          : 'bg-orange-50 hover:bg-orange-100 text-orange-600 hover:text-orange-700'
       }`}
       aria-label="URLをコピー"
       title="URLをクリップボードにコピー"

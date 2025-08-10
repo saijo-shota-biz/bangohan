@@ -19,10 +19,10 @@ export default function UserSetup({ onComplete }: UserSetupProps) {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-50 via-blue-50 to-pink-50 dark:from-slate-950 dark:via-purple-950 dark:to-slate-900">
+    <div className="min-h-screen flex items-center justify-center">
       <div className="glass-effect p-6 rounded-3xl text-center animate-fade-in max-w-sm mx-4">
         <div className="mb-6">
-          <div className="w-12 h-12 mx-auto mb-4 bg-gradient-to-r from-purple-500 to-pink-500 rounded-2xl flex items-center justify-center">
+          <div className="w-12 h-12 mx-auto mb-4 bg-gradient-to-r from-orange-400 to-amber-400 rounded-2xl flex items-center justify-center">
             <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
             </svg>
@@ -54,7 +54,7 @@ export default function UserSetup({ onComplete }: UserSetupProps) {
           <button
             type="submit"
             disabled={isSubmitting || !name.trim()}
-            className="w-full bg-gradient-to-r from-purple-500 to-pink-500 text-white py-3 px-6 rounded-xl font-semibold hover:from-purple-600 hover:to-pink-600 disabled:from-gray-300 disabled:to-gray-300 disabled:cursor-not-allowed transition-all duration-200 hover-lift focus:ring-2 focus:ring-primary focus:ring-offset-2 flex items-center justify-center gap-2 active:scale-95"
+            className="w-full bg-gradient-to-r from-orange-500 to-amber-500 text-white py-3 px-6 rounded-xl font-semibold hover:from-orange-600 hover:to-amber-600 disabled:from-gray-300 disabled:to-gray-300 disabled:cursor-not-allowed transition-all duration-200 hover-lift focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 flex items-center justify-center gap-2 active:scale-95"
           >
             {isSubmitting ? (
               <>
