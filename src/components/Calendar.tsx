@@ -120,7 +120,7 @@ export default function Calendar({ records, currentMonth, onMonthChange, onDateC
                 ${!isCurrentMonth 
                   ? 'bg-amber-100/30 text-amber-400 cursor-not-allowed opacity-40' 
                   : currentUserRecord && currentUserRecord.needsDinner
-                  ? 'bg-gradient-to-br from-orange-100 to-yellow-100 border-2 border-orange-300 cursor-pointer hover:shadow-lg active:scale-95'
+                  ? 'bg-gradient-to-br from-orange-200 to-yellow-200 border-2 border-orange-400 cursor-pointer hover:shadow-xl active:scale-95 shadow-md'
                   : 'bg-amber-50 border border-amber-200 hover:border-orange-400 cursor-pointer hover:shadow-lg active:scale-95'
                 }
                 ${isCurrentDay 
@@ -140,6 +140,13 @@ export default function Calendar({ records, currentMonth, onMonthChange, onDateC
                 }`}>
                   {format(date, 'd')}
                 </div>
+                
+                {/* あなたのマーク */}
+                {currentUserRecord?.needsDinner && (
+                  <div className="absolute top-0 right-0">
+                    <div className="w-2 h-2 bg-orange-500 rounded-full"></div>
+                  </div>
+                )}
                 
                 {/* 人数を右下に */}
                 {isCurrentMonth && ((() => {
@@ -172,6 +179,13 @@ export default function Calendar({ records, currentMonth, onMonthChange, onDateC
                 }`}>
                   {format(date, 'd')}
                 </div>
+                
+                {/* あなたのマーク */}
+                {currentUserRecord?.needsDinner && (
+                  <div className="absolute top-0 right-0 flex items-center gap-1">
+                    <span className="text-[10px] font-bold text-orange-600 bg-orange-100 px-1.5 py-0.5 rounded">あなた</span>
+                  </div>
+                )}
                 
                 {/* 人数を中央に */}
                 {isCurrentMonth && ((() => {
