@@ -7,9 +7,10 @@ import ShareButton from '@/components/ShareButton';
 import DinnerModal from '@/components/DinnerModal';
 import UserSetup from '@/components/UserSetup';
 import TodaysDinner from '@/components/TodaysDinner';
-import { subscribeToMonthRecords, addDinnerRecord, deleteDinnerRecord } from '@/lib/firestore';
+import TimeSelectorModal from '@/components/TimeSelectorModal';
+import { subscribeToMonthRecords, addDinnerRecord, deleteDinnerRecord, getUserPreference, setUserPreference as saveUserPreference } from '@/lib/firestore';
 import { UserNameManager } from '@/lib/userName';
-import { DinnerRecord } from '@/lib/types';
+import { DinnerRecord, UserPreference } from '@/lib/types';
 import { format } from 'date-fns';
 
 export default function FamilyCalendarPage() {
@@ -21,16 +22,28 @@ export default function FamilyCalendarPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [showUserSetup, setShowUserSetup] = useState(false);
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
+  const [showTimeSelector, setShowTimeSelector] = useState(false);
+  const [pendingDate, setPendingDate] = useState<Date | null>(null);
+  const [userPreference, setUserPreference] = useState<UserPreference | null>(null);
 
   useEffect(() => {
     const storedName = UserNameManager.getUserName();
     if (storedName) {
       setUserName(storedName);
+      // ユーザー設定を取得
+      getUserPreference(calendarId, storedName).then(pref => {
+        if (pref) {
+          setUserPreference(pref);
+        }
+      }).catch(error => {
+        console.log('ユーザー設定の取得をスキップ:', error);
+        // エラーが発生しても続行
+      });
     } else {
       setShowUserSetup(true);
     }
     setIsLoading(false);
-  }, []);
+  }, [calendarId]);
 
   useEffect(() => {
     if (!calendarId || !userName) return;
@@ -67,12 +80,9 @@ export default function FamilyCalendarPage() {
         console.error('記録の削除に失敗しました:', error);
       }
     } else {
-      // 新規の場合は「いる」として追加
-      try {
-        await addDinnerRecord(calendarId, dateStr, userName, true);
-      } catch (error) {
-        console.error('記録の追加に失敗しました:', error);
-      }
+      // 新規の場合は時間選択モーダルを表示（前回の時間をデフォルトで選択）
+      setPendingDate(date);
+      setShowTimeSelector(true);
     }
   };
 
@@ -86,6 +96,41 @@ export default function FamilyCalendarPage() {
 
   const handleCloseModal = () => {
     setSelectedDate(null);
+  };
+
+  const handleTimeSelect = async (time: string) => {
+    if (!userName || !pendingDate) return;
+
+    const dateStr = format(pendingDate, 'yyyy-MM-dd');
+    try {
+      // 晩ごはん記録を追加
+      await addDinnerRecord(calendarId, dateStr, userName, true, time);
+      
+      // ユーザー設定を更新（エラーが発生しても続行）
+      try {
+        await saveUserPreference(calendarId, userName, time);
+        setUserPreference({ 
+          calendarId, 
+          userName, 
+          defaultDinnerTime: time,
+          createdAt: new Date()
+        });
+      } catch (error) {
+        console.log('ユーザー設定の保存をスキップ:', error);
+        // ローカルにのみ保存
+        setUserPreference({ 
+          calendarId, 
+          userName, 
+          defaultDinnerTime: time,
+          createdAt: new Date()
+        });
+      }
+    } catch (error) {
+      console.error('記録の追加に失敗しました:', error);
+    }
+    
+    setShowTimeSelector(false);
+    setPendingDate(null);
   };
 
 
@@ -162,7 +207,21 @@ export default function FamilyCalendarPage() {
             date={selectedDate}
             records={records.filter(r => r.date === format(selectedDate, 'yyyy-MM-dd'))}
             currentUserName={userName!}
+            calendarId={calendarId}
             onClose={handleCloseModal}
+          />
+        )}
+
+        {showTimeSelector && pendingDate && (
+          <TimeSelectorModal
+            date={pendingDate}
+            userName={userName!}
+            defaultTime={userPreference?.defaultDinnerTime}
+            onClose={() => {
+              setShowTimeSelector(false);
+              setPendingDate(null);
+            }}
+            onConfirm={handleTimeSelect}
           />
         )}
 

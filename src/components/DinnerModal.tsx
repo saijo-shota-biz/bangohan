@@ -4,24 +4,48 @@ import { useState, useEffect } from 'react';
 import { format } from 'date-fns';
 import { ja } from 'date-fns/locale';
 import { DinnerRecord } from '@/lib/types';
+import TimeSelector from './TimeSelector';
+import { updateDinnerRecord } from '@/lib/firestore';
 
 interface DinnerModalProps {
   date: Date;
   records: DinnerRecord[];
   currentUserName: string;
+  calendarId: string;
   onClose: () => void;
 }
 
-export default function DinnerModal({ date, records, currentUserName, onClose }: DinnerModalProps) {
+export default function DinnerModal({ date, records, currentUserName, calendarId, onClose }: DinnerModalProps) {
   const [isVisible, setIsVisible] = useState(false);
+  const [selectedTimes, setSelectedTimes] = useState<{[key: string]: string}>({});
 
   useEffect(() => {
     setIsVisible(true);
-  }, []);
+    // 既存の時間をセット
+    const times: {[key: string]: string} = {};
+    records.forEach(record => {
+      if (record.dinnerTime) {
+        times[record.name] = record.dinnerTime;
+      }
+    });
+    setSelectedTimes(times);
+  }, [records]);
 
   const handleClose = () => {
     setIsVisible(false);
     setTimeout(onClose, 300);
+  };
+
+  const handleTimeSelect = async (userName: string, time: string) => {
+    const record = records.find(r => r.name === userName && r.needsDinner);
+    if (record?.id) {
+      try {
+        await updateDinnerRecord(calendarId, record.id, true, time);
+        setSelectedTimes(prev => ({ ...prev, [userName]: time }));
+      } catch (error) {
+        console.error('時間の更新に失敗しました:', error);
+      }
+    }
   };
 
 
@@ -103,7 +127,7 @@ export default function DinnerModal({ date, records, currentUserName, onClose }:
                           isCurrentUser ? 'ring-2 ring-orange-200 dark:ring-orange-800' : ''
                         }`}
                       >
-                        <div className="flex items-center justify-between">
+                        <div className="flex items-center justify-between mb-3">
                           <div className="flex items-center gap-3">
                             <div className="w-3 h-3 rounded-full bg-orange-400"></div>
                             <span className="font-semibold text-amber-900 flex items-center gap-2">
@@ -115,12 +139,20 @@ export default function DinnerModal({ date, records, currentUserName, onClose }:
                               )}
                             </span>
                           </div>
-                          <div className="flex items-center gap-2">
-                            <div className="text-sm font-medium text-orange-700 dark:text-orange-300">
-                              必要
+                          {!isCurrentUser && (
+                            <div className="text-sm font-medium text-amber-700">
+                              {selectedTimes[record.name] || record.dinnerTime || '時間未定'}
                             </div>
-                          </div>
+                          )}
                         </div>
+                        
+                        {isCurrentUser && (
+                          <TimeSelector
+                            selectedTime={selectedTimes[record.name] || record.dinnerTime}
+                            onTimeSelect={(time) => handleTimeSelect(record.name, time)}
+                            inline={true}
+                          />
+                        )}
                       </div>
                     );
                   })}

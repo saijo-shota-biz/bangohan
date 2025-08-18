@@ -14,7 +14,7 @@ import {
   updateDoc
 } from 'firebase/firestore';
 import { db } from './firebase';
-import { DinnerRecord } from './types';
+import { DinnerRecord, UserPreference } from './types';
 
 // カレンダー作成
 export async function createCalendar(calendarId: string): Promise<void> {
@@ -29,13 +29,15 @@ export async function addDinnerRecord(
   calendarId: string,
   date: string,
   name: string,
-  needsDinner: boolean
+  needsDinner: boolean,
+  dinnerTime?: string
 ): Promise<void> {
   const recordsRef = collection(db, 'calendars', calendarId, 'records');
   await addDoc(recordsRef, {
     date,
     name,
     needsDinner,
+    dinnerTime,
     createdAt: serverTimestamp()
   });
 }
@@ -132,11 +134,62 @@ export async function deleteDinnerRecord(
 export async function updateDinnerRecord(
   calendarId: string,
   recordId: string,
-  needsDinner: boolean
+  needsDinner: boolean,
+  dinnerTime?: string
 ): Promise<void> {
   const recordRef = doc(db, 'calendars', calendarId, 'records', recordId);
   await updateDoc(recordRef, {
     needsDinner,
+    dinnerTime,
     updatedAt: serverTimestamp()
   });
+}
+
+// ユーザー設定を取得
+export async function getUserPreference(
+  calendarId: string,
+  userName: string
+): Promise<UserPreference | null> {
+  const prefsRef = collection(db, 'calendars', calendarId, 'preferences');
+  const q = query(prefsRef, where('userName', '==', userName));
+  
+  const snapshot = await getDocs(q);
+  if (snapshot.empty) return null;
+  
+  const doc = snapshot.docs[0];
+  return {
+    id: doc.id,
+    calendarId,
+    ...doc.data(),
+    createdAt: (doc.data().createdAt as Timestamp)?.toDate() || new Date()
+  } as UserPreference;
+}
+
+// ユーザー設定を保存
+export async function setUserPreference(
+  calendarId: string,
+  userName: string,
+  defaultDinnerTime: string
+): Promise<void> {
+  const prefsRef = collection(db, 'calendars', calendarId, 'preferences');
+  
+  // 既存の設定を検索
+  const q = query(prefsRef, where('userName', '==', userName));
+  const snapshot = await getDocs(q);
+  
+  if (!snapshot.empty) {
+    // 既存の設定を更新
+    const docRef = doc(db, 'calendars', calendarId, 'preferences', snapshot.docs[0].id);
+    await updateDoc(docRef, {
+      defaultDinnerTime,
+      updatedAt: serverTimestamp()
+    });
+  } else {
+    // 新規作成
+    await addDoc(prefsRef, {
+      userName,
+      defaultDinnerTime,
+      createdAt: serverTimestamp()
+    });
+  }
 }
