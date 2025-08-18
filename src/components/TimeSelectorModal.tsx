@@ -27,6 +27,12 @@ export default function TimeSelectorModal({
     setIsVisible(true);
   }, []);
 
+  useEffect(() => {
+    if (defaultTime) {
+      setSelectedTime(defaultTime);
+    }
+  }, [defaultTime]);
+
   const handleClose = () => {
     setIsVisible(false);
     setTimeout(onClose, 300);

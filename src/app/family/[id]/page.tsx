@@ -77,19 +77,9 @@ export default function FamilyCalendarPage() {
         console.error('記録の削除に失敗しました:', error);
       }
     } else {
-      // 新規の場合
-      if (userPreference?.defaultDinnerTime) {
-        // 前回の時間がある場合は自動で登録
-        try {
-          await addDinnerRecord(calendarId, dateStr, userName, true, userPreference.defaultDinnerTime);
-        } catch (error) {
-          console.error('記録の追加に失敗しました:', error);
-        }
-      } else {
-        // 初回は時間選択モーダルを表示
-        setPendingDate(date);
-        setShowTimeSelector(true);
-      }
+      // 新規の場合は時間選択モーダルを表示（前回の時間をデフォルトで選択）
+      setPendingDate(date);
+      setShowTimeSelector(true);
     }
   };
 
