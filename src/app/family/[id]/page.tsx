@@ -35,6 +35,9 @@ export default function FamilyCalendarPage() {
         if (pref) {
           setUserPreference(pref);
         }
+      }).catch(error => {
+        console.log('ユーザー設定の取得をスキップ:', error);
+        // エラーが発生しても続行
       });
     } else {
       setShowUserSetup(true);
@@ -103,14 +106,25 @@ export default function FamilyCalendarPage() {
       // 晩ごはん記録を追加
       await addDinnerRecord(calendarId, dateStr, userName, true, time);
       
-      // ユーザー設定を更新
-      await saveUserPreference(calendarId, userName, time);
-      setUserPreference({ 
-        calendarId, 
-        userName, 
-        defaultDinnerTime: time,
-        createdAt: new Date()
-      });
+      // ユーザー設定を更新（エラーが発生しても続行）
+      try {
+        await saveUserPreference(calendarId, userName, time);
+        setUserPreference({ 
+          calendarId, 
+          userName, 
+          defaultDinnerTime: time,
+          createdAt: new Date()
+        });
+      } catch (error) {
+        console.log('ユーザー設定の保存をスキップ:', error);
+        // ローカルにのみ保存
+        setUserPreference({ 
+          calendarId, 
+          userName, 
+          defaultDinnerTime: time,
+          createdAt: new Date()
+        });
+      }
     } catch (error) {
       console.error('記録の追加に失敗しました:', error);
     }
