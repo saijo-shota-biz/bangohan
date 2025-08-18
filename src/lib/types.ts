@@ -9,5 +9,14 @@ export interface DinnerRecord {
   date: string;
   name: string;
   needsDinner: boolean;
+  dinnerTime?: string;
+  createdAt: Date;
+}
+
+export interface UserPreference {
+  id?: string;
+  calendarId: string;
+  userName: string;
+  defaultDinnerTime?: string;
   createdAt: Date;
 }
