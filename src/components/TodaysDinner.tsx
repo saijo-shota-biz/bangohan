@@ -84,18 +84,7 @@ export default function TodaysDinner({ records }: TodaysDinnerProps) {
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
           </svg>
           <span className="font-medium">
-            {(() => {
-              const times = todayRecords.map(r => r.dinnerTime).filter(Boolean);
-              if (times.length === 0) {
-                return `今日は${todayRecords.length}人分の晩ごはんを準備`;
-              }
-              const uniqueTimes = [...new Set(times)];
-              if (uniqueTimes.length === 1) {
-                return `${uniqueTimes[0]}頃にみんなで晩ごはん`;
-              } else {
-                return `${Math.min(...times.map(t => t.split(':')[0]))}:00〜${Math.max(...times.map(t => t.split(':')[0]))}:00の間で晩ごはん`;
-              }
-            })()}
+            今日は{todayRecords.length}人分の晩ごはんを準備
           </span>
         </div>
       </div>
