@@ -7,6 +7,7 @@ interface TimeSelectorProps {
 }
 
 const DINNER_TIMES = ['18:00', '19:00', '20:00', '21:00', '22:00', '23:00'];
+const ANYTIME = 'いつでもOK';
 
 export default function TimeSelector({ selectedTime, onTimeSelect, inline = false }: TimeSelectorProps) {
   return (
@@ -31,6 +32,18 @@ export default function TimeSelector({ selectedTime, onTimeSelect, inline = fals
           </button>
         ))}
       </div>
+      <button
+        onClick={() => onTimeSelect(ANYTIME)}
+        className={`
+          w-full mt-2 py-2 px-3 rounded-lg font-medium transition-all
+          ${selectedTime === ANYTIME
+            ? 'bg-gradient-to-r from-orange-500 to-amber-500 text-white shadow-md'
+            : 'bg-amber-100 hover:bg-amber-200 text-amber-800'
+          }
+        `}
+      >
+        🕐 いつでもOK
+      </button>
     </div>
   );
 }
